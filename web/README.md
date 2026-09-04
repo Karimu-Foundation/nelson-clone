@@ -92,3 +92,29 @@ Opus 5 is the default — the judgement-heavy reasoning this agent is for. Sonne
 and Haiku 4.5 are selectable to compare answers and cost; Haiku is useful mainly
 as a weak baseline. Sampling parameters (temperature and friends) are not
 exposed because the 5-series models do not accept them.
+
+## Access control
+
+The knowledge base holds Karimu's real staff roster, financial figures and
+personal details, so this app is not meant to be openly reachable. It ships with
+a shared-password gate (`src/proxy.ts`) that **fails closed**: with no
+`APP_ACCESS_PASSWORD` set, nothing is served — not the chat, not `/api/kb`.
+
+Two required environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `ANTHROPIC_API_KEY` | Calls the Claude API. Without it the chat returns a clear error. |
+| `APP_ACCESS_PASSWORD` | The shared password for the gate. Without it the whole app is closed. |
+
+Set both in Vercel → Project → Settings → Environment Variables (all
+environments), then redeploy. Signing in sets an HttpOnly cookie holding a
+SHA-256 hash of the password — the password itself is never stored client-side.
+To revoke access for everyone, change `APP_ACCESS_PASSWORD` and redeploy.
+
+On a Vercel **Pro** plan you can instead use Vercel Authentication (Project →
+Settings → Deployment Protection → All Deployments), which gates the app on
+Vercel account membership rather than a shared password. That option is not
+available for production deployments on the Hobby plan, which is why the
+password gate exists. If you switch to it, delete `src/proxy.ts`,
+`src/app/login/`, `src/app/api/access/` and `src/lib/access.ts`.
