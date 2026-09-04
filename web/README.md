@@ -102,10 +102,11 @@ a shared-password gate (`src/proxy.ts`) that **fails closed**: with no
 
 Two required environment variables:
 
-| Variable | Purpose |
-|---|---|
-| `ANTHROPIC_API_KEY` | Calls the Claude API. Without it the chat returns a clear error. |
-| `APP_ACCESS_PASSWORD` | The shared password for the gate. Without it the whole app is closed. |
+| Variable | Required | Purpose |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | yes | Calls the Claude API. Without it the chat returns a clear error. |
+| `APP_ACCESS_PASSWORD` | yes | The shared password for the gate. Without it the whole app is closed. |
+| `ANTHROPIC_WORKSPACE_ID` | sometimes | Only if the API key is **organisation-level** — a key not created inside a workspace. Such a key returns `400 … not scoped to a workspace` unless the request names one; setting this sends the `anthropic-workspace-id` header. Find it in Anthropic Console → Settings → Workspaces (starts with `wrkspc_`). Leave unset for a workspace-scoped key. |
 
 Set both in Vercel → Project → Settings → Environment Variables (all
 environments), then redeploy. Signing in sets an HttpOnly cookie holding a

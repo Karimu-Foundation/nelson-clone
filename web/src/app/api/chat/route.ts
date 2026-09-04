@@ -114,7 +114,16 @@ export async function POST(req: NextRequest) {
   const maxTokens = Math.min(Math.max(body.maxTokens ?? 16000, 1024), 32000);
 
   const systemText = buildSystemPrompt(mode);
-  const client = new Anthropic();
+
+  // An org-level API key (one not created inside a workspace) is rejected with
+  // a 400 unless the request names a workspace. Set ANTHROPIC_WORKSPACE_ID to
+  // use such a key; a workspace-scoped key needs nothing here.
+  const workspaceId = process.env.ANTHROPIC_WORKSPACE_ID?.trim();
+  const client = new Anthropic(
+    workspaceId
+      ? { defaultHeaders: { "anthropic-workspace-id": workspaceId } }
+      : {},
+  );
 
   const encoder = new TextEncoder();
   const started = Date.now();
@@ -255,12 +264,19 @@ export async function POST(req: NextRequest) {
           },
         });
       } catch (err) {
-        const message =
+        let message =
           err instanceof Anthropic.APIError
             ? `Anthropic API error ${err.status ?? ""}: ${err.message}`
             : err instanceof Error
               ? err.message
               : "Unknown error";
+
+        // Point at the fix rather than making the reader decode the API's wording.
+        if (/not scoped to a workspace/i.test(message)) {
+          message +=
+            "\n\nFix: either set ANTHROPIC_WORKSPACE_ID (Anthropic Console → Settings → Workspaces → the workspace's ID, starting with `wrkspc_`) and redeploy, or replace ANTHROPIC_API_KEY with a key created inside a workspace.";
+        }
+
         send({ type: "error", message });
       } finally {
         closed = true;
