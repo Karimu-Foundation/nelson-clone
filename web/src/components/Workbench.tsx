@@ -404,12 +404,13 @@ export function Workbench() {
                   <div className="hero">
                     <h1>Talk to the clone, then judge it.</h1>
                     <p>
-                      This agent answers as Karimu&apos;s COO, grounded in the
-                      repository&apos;s 10 skills and 7 knowledge files. Every
-                      answer comes back with the files it actually read, what it
-                      cost, and a scorecard — so you can tell real grounding
-                      from plausible-sounding filler. It replies in English by
-                      design.
+                      Answers come back in Nelson&apos;s own first person, as he
+                      would write them, so the thing you are judging is
+                      fidelity: is this what he would have said? Each one also
+                      carries the skills and knowledge files it actually read,
+                      what it cost, and a scorecard — so you can tell real
+                      grounding from plausible-sounding filler. It replies in
+                      English by design.
                     </p>
                   </div>
                 )}

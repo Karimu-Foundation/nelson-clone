@@ -1,4 +1,4 @@
-export type ModelId = "claude-opus-5" | "claude-sonnet-5" | "claude-haiku-4-5";
+export type ModelId = "claude-sonnet-5" | "claude-haiku-4-5";
 
 export type ModelSpec = {
   id: ModelId;
@@ -12,16 +12,13 @@ export type ModelSpec = {
   note: string;
 };
 
+/**
+ * Opus-tier models are deliberately not offered here: review sessions run many
+ * turns over a large cached system prompt, and Opus made that too expensive to
+ * do freely. `getModel` falls back to the first entry, so a request naming a
+ * model that is not on this list is served by Sonnet rather than honoured.
+ */
 export const MODELS: ModelSpec[] = [
-  {
-    id: "claude-opus-5",
-    label: "Claude Opus 5",
-    inputPrice: 5,
-    outputPrice: 25,
-    supportsAdaptiveThinking: true,
-    supportsEffort: true,
-    note: "Best judgement — the default for Nelson-grade reasoning.",
-  },
   {
     id: "claude-sonnet-5",
     label: "Claude Sonnet 5",
@@ -29,7 +26,7 @@ export const MODELS: ModelSpec[] = [
     outputPrice: 10,
     supportsAdaptiveThinking: true,
     supportsEffort: true,
-    note: "Cheaper and faster; good for drafting and bulk review.",
+    note: "The default for review sessions — strong judgement at a workable cost.",
   },
   {
     id: "claude-haiku-4-5",
@@ -42,11 +39,11 @@ export const MODELS: ModelSpec[] = [
   },
 ];
 
-export const DEFAULT_MODEL: ModelId = "claude-opus-5";
+export const DEFAULT_MODEL: ModelId = "claude-sonnet-5";
 
 export const EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"] as const;
 export type Effort = (typeof EFFORT_LEVELS)[number];
-export const DEFAULT_EFFORT: Effort = "high";
+export const DEFAULT_EFFORT: Effort = "medium";
 
 export function getModel(id: string): ModelSpec {
   return MODELS.find((m) => m.id === id) ?? MODELS[0];

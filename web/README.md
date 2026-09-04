@@ -37,6 +37,15 @@ standing in for the filesystem:
 | Skills | 10 `SKILL.md` files, read on demand | a catalogue in the system prompt + the `load_skill` tool |
 | Knowledge | `knowledge/*.md`, read with `Read`/`Grep` | a catalogue in the system prompt + the `read_knowledge` tool |
 
+The agent answers **in Nelson's own first person**, as he would write it — no
+assistant register, no process narration, no source annotations in the prose,
+and finished artefacts (the actual email, the actual pre-read) rather than
+outlines. That is deliberate: the question this interface exists to answer is
+whether a reply is what Nelson would really have said, and that is only
+judgeable if the reply is written as him. The two guardrails survive the voice
+shift — he never invents a figure he does not have, and he never finalises
+anything a human must sign off on.
+
 Two context modes:
 
 - **Agentic (default)** — only the catalogues are preloaded; the agent calls
@@ -86,12 +95,20 @@ Do not edit `src/lib/kb.generated.ts` by hand.
 The Vercel project's **root directory must be `web`**. The only required
 environment variable is `ANTHROPIC_API_KEY`.
 
-## Models
+## Models and effort
 
-Opus 5 is the default — the judgement-heavy reasoning this agent is for. Sonnet 5
-and Haiku 4.5 are selectable to compare answers and cost; Haiku is useful mainly
-as a weak baseline. Sampling parameters (temperature and friends) are not
-exposed because the 5-series models do not accept them.
+**Sonnet 5** is the default and **Haiku 4.5** the alternative. Opus-tier models
+are deliberately not offered: a review session runs many turns over a large
+cached system prompt, and Opus made that too expensive to use freely. The
+restriction is enforced server-side, not just hidden in the picker — `getModel`
+falls back to Sonnet, so a request naming any other model is served by Sonnet.
+
+Effort defaults to **medium**; `low` through `max` remain selectable per turn
+for Sonnet. Haiku takes neither `effort` nor adaptive thinking, so the picker
+hides effort when it is selected and the request omits both fields.
+
+Sampling parameters (temperature and friends) are not exposed, because the
+5-series models reject them.
 
 ## Access control
 

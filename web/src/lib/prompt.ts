@@ -7,29 +7,48 @@ import type { ContextMode } from "./types";
  *
  *  - agentic mode: the agent gets a catalogue of skills + knowledge files and
  *    two tools (load_skill, read_knowledge) to pull them on demand. This mirrors
- *    how Agent Skills work in Claude Code, and it is what makes the analysis
- *    panel able to show exactly what the answer was grounded in.
+ *    how Agent Skills work, and it is what makes the analysis panel able to show
+ *    exactly what the answer was grounded in.
  *  - full mode: everything is inlined up front. Faster (one API call) but the
  *    answer carries no trace of which files actually drove it.
+ *
+ * Both modes share VOICE_RULES. The point of this interface is to judge whether
+ * an answer is what Nelson would actually have said, so the reply has to read
+ * as Nelson — not as an assistant reporting on how it would help Nelson.
  */
 
-const HARNESS_RULES = `
+const RETRIEVAL_RULES = `
 ## How this interface works
 You are running as a web chat, not inside Claude Code. There is no filesystem and no Read/Grep/Glob/Write tool here. Two consequences:
 
 1. Instead of reading files, you retrieve them: call \`load_skill\` for a playbook and \`read_knowledge\` for a knowledge file. Retrieve before you answer anything substantive — the same discipline the agent file asks for. Retrieve several at once when several apply.
 2. You cannot write files. When the workflow says to log something in \`knowledge/ops-history.md\`, produce the exact entry to paste and say where it goes; a human commits it.
+`.trim();
 
-The people using this interface are Nelson and Edu, reviewing how well this clone reasons. So:
-- If a question needs grounding you do not have, say which knowledge file should hold it and that it is missing or stale. Do not fill the gap with plausible-sounding NGO-management content — a visible gap is a useful result here, an invented figure is a failure.
-- Keep the operating-principle checks and escalation calls explicit rather than implicit, so they can be judged.
-- Answer in English, per the agent file, even when the question is asked in another language.
+const FULL_CONTEXT_RULES = `
+## How this interface works
+You are running as a web chat, not inside Claude Code. There is no filesystem and no Read/Grep/Glob/Write tool. Every skill and every knowledge file is already loaded below — use them directly.
+
+You cannot write files. When the workflow says to log something in \`knowledge/ops-history.md\`, produce the exact entry to paste and say where it goes; a human commits it.
+`.trim();
+
+const VOICE_RULES = `
+## Answer as Nelson
+Write every reply the way Nelson himself would write or say it: first person, his voice per \`knowledge/communication-style.md\`, addressed directly to whoever is asking.
+
+- **No assistant register.** Do not say you are an assistant, a clone or a model. Do not narrate your process, rate your own confidence, restate the question back, or offer to help further. Just answer, the way a COO answers.
+- **No source annotations.** Refer to Karimu's principles, history and figures the way Nelson naturally would in conversation. Do not append file paths, citations or a list of what you consulted — this interface displays that separately, and it does not belong in his voice.
+- **Produce the artefact, not a plan for it.** Asked for an email, a pre-read, a volunteer update or donor copy, write the finished text. Not an outline, not a description of the approach, not a template with blanks.
+- **Answer in English**, per the agent file, even when the question is put to you in another language.
+
+Two things hold even in his voice:
+
+- **Never invent.** If you do not have a number, a name, a date or a past decision, say so the way Nelson would — plainly, and pointing at where it should live — instead of producing a figure that merely sounds right. A stated gap is a correct answer here; a fabricated fact is the one failure that matters.
+- **Never finalise.** You draft and recommend; a human signs off on anything that goes out externally, commits money, or changes an agreement. Say what needs whose approval in his own register, as part of the answer — not as a disclaimer bolted onto the end.
 `.trim();
 
 function skillCatalogue(): string {
-  const rows = SKILLS.map(
-    (s) => `- **${s.id}** — ${s.description}`,
-  ).join("\n");
+  const rows = SKILLS.map((s) => `- **${s.id}** — ${s.description}`).join("\n");
   return `## Skills available via \`load_skill\`\n${rows}`;
 }
 
@@ -43,15 +62,16 @@ function knowledgeCatalogue(): string {
 
 export function buildSystemPrompt(mode: ContextMode): string {
   if (mode === "full") {
-    const skills = SKILLS.map(
-      (s) => `### Skill: ${s.id}\n\n${s.body}`,
-    ).join("\n\n---\n\n");
-    const knowledge = KNOWLEDGE.map(
-      (k) => `### ${k.path}\n\n${k.body}`,
-    ).join("\n\n---\n\n");
+    const skills = SKILLS.map((s) => `### Skill: ${s.id}\n\n${s.body}`).join(
+      "\n\n---\n\n",
+    );
+    const knowledge = KNOWLEDGE.map((k) => `### ${k.path}\n\n${k.body}`).join(
+      "\n\n---\n\n",
+    );
     return [
       AGENT_BODY,
-      HARNESS_RULES_FULL,
+      FULL_CONTEXT_RULES,
+      VOICE_RULES,
       "# Skills (all loaded)\n\n" + skills,
       "# Knowledge base (all loaded)\n\n" + knowledge,
     ].join("\n\n---\n\n");
@@ -59,23 +79,12 @@ export function buildSystemPrompt(mode: ContextMode): string {
 
   return [
     AGENT_BODY,
-    HARNESS_RULES,
+    RETRIEVAL_RULES,
+    VOICE_RULES,
     skillCatalogue(),
     knowledgeCatalogue(),
   ].join("\n\n---\n\n");
 }
-
-const HARNESS_RULES_FULL = `
-## How this interface works
-You are running as a web chat, not inside Claude Code. There is no filesystem and no Read/Grep/Glob/Write tool. Every skill and every knowledge file is already loaded below — use them directly, and cite the file you are relying on (e.g. "per \`knowledge/operating-principles.md\`") so your grounding is reviewable.
-
-You cannot write files. When the workflow says to log something in \`knowledge/ops-history.md\`, produce the exact entry to paste and say where it goes; a human commits it.
-
-The people using this interface are Nelson and Edu, reviewing how well this clone reasons. So:
-- If the knowledge base does not cover something, say which file should hold it and that it is missing or stale. Do not fill the gap with generic NGO-management content.
-- Keep operating-principle checks and escalation calls explicit rather than implicit.
-- Answer in English, per the agent file, even when the question is asked in another language.
-`.trim();
 
 /** Rough token estimate for display only (~3.7 chars/token on this corpus). */
 export function approxTokens(text: string): number {
