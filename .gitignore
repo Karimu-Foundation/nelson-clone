@@ -4,8 +4,8 @@ out/
 build/
 .vercel
 .env
-.env.local
 .env*.local
+!web/.env.example
 *.log
 .DS_Store
 .idea/
