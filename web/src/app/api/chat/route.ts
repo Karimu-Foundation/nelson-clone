@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
 
       try {
         for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-          const params: Record<string, unknown> = {
+          const params: Anthropic.MessageStreamParams = {
             model: model.id,
             max_tokens: maxTokens,
             system: [
@@ -157,17 +157,16 @@ export async function POST(req: NextRequest) {
               },
             ],
             messages,
+            ...(mode === "agentic" ? { tools: TOOLS } : {}),
+            // Adaptive thinking and effort are 5-series only; Haiku takes neither.
+            ...(model.supportsAdaptiveThinking
+              ? { thinking: { type: "adaptive", display: "summarized" } as const }
+              : {}),
+            ...(effort ? { output_config: { effort } } : {}),
           };
-          if (mode === "agentic") params.tools = TOOLS;
-          if (model.supportsAdaptiveThinking) {
-            params.thinking = { type: "adaptive", display: "summarized" };
-          }
-          if (effort) params.output_config = { effort };
 
           apiCalls++;
-          const messageStream = client.messages.stream(
-            params as unknown as Anthropic.MessageStreamParams,
-          );
+          const messageStream = client.messages.stream(params);
 
           for await (const event of messageStream) {
             if (event.type !== "content_block_delta") continue;
