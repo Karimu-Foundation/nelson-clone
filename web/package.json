@@ -1,0 +1,25 @@
+{
+  "name": "nelson-clone-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chat and response-analysis interface for the Nelson Clone (Karimu Foundation COO agent).",
+  "scripts": {
+    "sync-kb": "node scripts/sync-kb.mjs",
+    "dev": "npm run sync-kb && next dev",
+    "build": "npm run sync-kb && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}
