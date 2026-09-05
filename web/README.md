@@ -110,6 +110,46 @@ hides effort when it is selected and the request omits both fields.
 Sampling parameters (temperature and friends) are not exposed, because the
 5-series models reject them.
 
+## Running it locally with the private knowledge layer
+
+The deployed app currently reads the **public** layer only. To run the real brain
+on your machine:
+
+```bash
+git clone git@github.com:Karimu-Foundation/karimu-brain.git   # alongside this repo
+cd nelson-clone/web && npm install
+cp .env.example .env.local          # then fill it in, see below
+npm run dev                          # http://localhost:3000
+```
+
+`.env.local` needs three values:
+
+| Variable | Value |
+|---|---|
+| `ANTHROPIC_API_KEY` | your own key from console.anthropic.com |
+| `APP_ACCESS_PASSWORD` | anything, e.g. `local` — the app serves nothing without it |
+| `PRIVATE_KB_DIR` | `../karimu-brain` — relative to the repository root, or an absolute path |
+
+`sync-kb.mjs` reads `.env.local` itself (npm scripts do not load it), so the
+private layer is picked up by `npm run dev` and `npm run build` with no extra
+flags. Confirm it worked from the build line:
+
+```
+[sync-kb] 10 skills, 9 knowledge files (102 KB) — private layer ON, 8 file(s) from …/private-knowledge
+[sync-kb] 10 skills, 7 knowledge files (26 KB)  — private layer OFF (public annual-report knowledge only)
+```
+
+Two things worth knowing:
+
+- **`sources/` never reaches the model.** Only `.md` files at the top level of
+  `private-knowledge/` are loaded, so raw transcripts stay out of the prompt.
+- **The private layer replaces, it does not merge.** With it on, none of
+  `public-knowledge/` is used — every file is superseded by its private
+  counterpart.
+
+To sanity-check the clone itself, `EVAL.md` in the private repository has three
+questions with known-correct answers. It runs in Claude Code with no API key.
+
 ## Access control
 
 A real knowledge base holds a named staff roster, financial figures and personal

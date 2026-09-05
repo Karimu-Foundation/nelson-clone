@@ -27,17 +27,34 @@ const glossaryFile = path.join(repoRoot, "GLOSSARY.md");
  * it — a fork, or a local checkout with no access — the public, annual-report
  * layer is what the agent gets, and everything still runs.
  */
+// npm scripts do not load .env.local — Next.js does that for the app, not for a
+// pre-build script. Read it here so PRIVATE_KB_DIR can live in one obvious file
+// instead of having to be exported in every shell that runs a build.
+const envFile = path.join(webRoot, ".env.local");
+if (fs.existsSync(envFile)) {
+  for (const line of fs.readFileSync(envFile, "utf8").split(/\r?\n/)) {
+    const m = /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/.exec(line);
+    if (!m) continue;
+    const value = m[2].trim().replace(/^["']|["']$/g, "");
+    if (value && process.env[m[1]] === undefined) process.env[m[1]] = value;
+  }
+}
+
 const privateRoot = process.env.PRIVATE_KB_DIR?.trim();
-const privateDir = privateRoot
-  ? path.resolve(privateRoot, "private-knowledge")
+// Resolved against the repository root, not the working directory, so the same
+// value works whether the build runs from web/ or from the repo root. Absolute
+// paths are passed through unchanged.
+const privateBase = privateRoot ? path.resolve(repoRoot, privateRoot) : null;
+const privateDir = privateBase
+  ? path.join(privateBase, "private-knowledge")
   : null;
-const privateGlossary = privateRoot
-  ? path.resolve(privateRoot, "GLOSSARY.md")
+const privateGlossary = privateBase
+  ? path.join(privateBase, "GLOSSARY.md")
   : null;
 
 if (privateRoot && !fs.existsSync(privateDir)) {
   console.error(
-    `[sync-kb] PRIVATE_KB_DIR is set to "${privateRoot}" but ${privateDir} does not exist.`,
+    `[sync-kb] PRIVATE_KB_DIR="${privateRoot}" resolves to ${privateBase}, but ${privateDir} does not exist.`,
   );
   process.exit(1);
 }
