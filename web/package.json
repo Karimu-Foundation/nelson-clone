@@ -4,9 +4,10 @@
   "private": true,
   "description": "Chat and response-analysis interface for the Nelson Clone (Karimu Foundation COO agent).",
   "scripts": {
+    "fetch-kb": "node scripts/fetch-private-kb.mjs",
     "sync-kb": "node scripts/sync-kb.mjs",
-    "dev": "npm run sync-kb && next dev",
-    "build": "npm run sync-kb && next build",
+    "dev": "npm run fetch-kb && npm run sync-kb && next dev",
+    "build": "npm run fetch-kb && npm run sync-kb && next build",
     "start": "next start",
     "lint": "next lint"
   },

@@ -40,7 +40,12 @@ if (fs.existsSync(envFile)) {
   }
 }
 
-const privateRoot = process.env.PRIVATE_KB_DIR?.trim();
+// Either an explicit PRIVATE_KB_DIR (local development) or the checkout that
+// fetch-private-kb.mjs leaves behind on a build that has credentials.
+const fetched = path.join(repoRoot, ".private-kb");
+const privateRoot =
+  process.env.PRIVATE_KB_DIR?.trim() ||
+  (fs.existsSync(fetched) ? ".private-kb" : undefined);
 // Resolved against the repository root, not the working directory, so the same
 // value works whether the build runs from web/ or from the repo root. Absolute
 // paths are passed through unchanged.

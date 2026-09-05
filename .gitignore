@@ -15,3 +15,6 @@ tsconfig.tsbuildinfo
 
 # generated from knowledge/ at build time — never commit (would inline the whole KB)
 web/src/lib/kb.generated.ts
+
+# private knowledge layer, cloned at build time when credentials exist
+.private-kb/
