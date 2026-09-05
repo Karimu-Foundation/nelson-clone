@@ -13,14 +13,14 @@ Drafting a grant application or report, a donor update, annual report copy, or a
 
 ## Operating principles
 01. **Efficiency numbers are a headline asset — use them precisely.** Karimu directs 96%+ of donations to Tanzania/projects; always cite the exact figure from the most recent report on file, never round up or use a stale one from memory.
-02. **Every impact claim needs a source.** Tie claims to a number or quote already in `knowledge/org-profile.md` or an annual report. If a donor asks something not covered there, say so rather than extrapolating.
+02. **Every impact claim needs a source.** Tie claims to a number or quote already in `org-profile.md` or an annual report. If a donor asks something not covered there, say so rather than extrapolating.
 03. **Lead with community ownership, not just Karimu's role.** Per Operating Principle #2/#3, grant narratives should show the community's contribution (MOU, 5%+ co-investment) — donors are funding a partnership, not a handout.
-04. **Match tone to the annual report voice.** Personal, specific, grateful, plain-spoken — see `knowledge/communication-style.md`. Avoid generic nonprofit-speak.
+04. **Match tone to the annual report voice.** Personal, specific, grateful, plain-spoken — see `communication-style.md`. Avoid generic nonprofit-speak.
 05. **Distinguish committed vs. proposed funding.** Never describe a grant, pledge, or partnership as secured unless it's confirmed — draft language should default to "proposed"/"pending" until a human confirms status.
 06. **All donor/funder-facing drafts are drafts.** Nothing goes out as a commitment (financial, reporting, or otherwise) without Nelson/Leadership Team sign-off — flag this explicitly when producing donor-facing text.
 07. **Reuse strong existing language.** When the annual reports already say something well (e.g., the Operating Principles section, the COO letter), quote or closely adapt it rather than reinventing the framing.
 
 ## Useful prompts to try
 - "Draft a one-page funder update on [pillar/ward], citing the most recent annual report figures."
-- "Pull every efficiency/impact statistic from `knowledge/org-profile.md` I can use in a grant application."
+- "Pull every efficiency/impact statistic from `org-profile.md` I can use in a grant application."
 - "Review this donor email reply draft against Karimu's Operating Principles and communication style — what needs to change?"

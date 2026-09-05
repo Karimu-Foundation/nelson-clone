@@ -5,10 +5,10 @@ import { ACCESS_COOKIE, accessToken } from "@/lib/access";
 /**
  * Shared-password gate (Next.js proxy convention).
  *
- * The knowledge base in this repository holds Karimu's real staff roster,
- * financial figures and personal details, so this app must never be openly
- * reachable. It fails CLOSED: with no APP_ACCESS_PASSWORD configured, nothing
- * is served at all.
+ * The deployed app reads a private knowledge base holding a real staff roster,
+ * financial figures and personal details, so it must never be openly reachable.
+ * (The knowledge/ files in this public repo are fictional examples.) It fails
+ * CLOSED: with no APP_ACCESS_PASSWORD configured, nothing is served at all.
  *
  * On a Vercel Pro plan you can use Vercel Authentication (Project → Settings →
  * Deployment Protection → All Deployments) instead and drop this file.

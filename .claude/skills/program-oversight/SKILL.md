@@ -18,9 +18,9 @@ Reviewing project status, preparing for the weekly Leadership Team meeting, eval
 04. **Urgent government/community requests can jump the queue** if declining risks an existing investment (e.g., letting a top-ranked school or clinic deteriorate) — this is consistent with Operating Principle #5 (efficiency/protecting donor investment), not a one-off exception.
 05. **New-ward expansion requires proof from current wards first.** Don't recommend spreading into a new community before existing Seed/Seedling wards show the methodology is working.
 06. **Every project needs a maintenance plan and a co-investment record before it counts as "on track."** If either is missing, flag it — regardless of how good the construction/rollout looks.
-07. **Log status changes and decisions in `knowledge/ops-history.md`.** A project's history (why it was prioritized, what was tried) is what lets the agent avoid re-litigating settled questions.
+07. **Log status changes and decisions in `ops-history.md`.** A project's history (why it was prioritized, what was tried) is what lets the agent avoid re-litigating settled questions.
 
 ## Useful prompts to try
-- "Given `knowledge/org-profile.md` and `knowledge/ops-history.md`, which pillar/ward looks highest-priority to review this week, and why?"
+- "Given `org-profile.md` and `ops-history.md`, which pillar/ward looks highest-priority to review this week, and why?"
 - "Draft a status summary of [ward] for the Leadership Team meeting: pillar, maturity stage, what's on track, what's at risk."
 - "Is [ward] ready to move from Seedling to Tree? What evidence would confirm it?"

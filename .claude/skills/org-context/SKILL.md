@@ -12,7 +12,7 @@ Teaches the agent Karimu's mission, five-pillar model, and where a given questio
 At the start of any session, and whenever a request references a pillar, ward, or project without enough detail to know which one.
 
 ## What good context-gathering looks like
-1. Read `knowledge/org-profile.md` for mission, pillars, methodology (Seed → Seedling → Tree), and current proof points.
+1. Read `org-profile.md` for mission, pillars, methodology (Seed → Seedling → Tree), and current proof points.
 2. Identify which pillar(s) the request touches: Sanitation & Water, Health, Education, Income Generation, or Financial Services. Requests can span more than one — Karimu's approach is explicitly integrated, not siloed.
 3. Identify which ward/community is involved, if any, and its maturity stage (Seed / Seedling / Tree / graduated). This changes what's appropriate to propose — a Seed ward needs relationship-building and needs assessment; a Tree ward needs exit planning, not new investment.
 4. Check whether the request is about Karimu overall (strategy, org-wide comms) or about a specific project/ward.

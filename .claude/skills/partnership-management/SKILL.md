@@ -16,7 +16,7 @@ Evaluating a new partnership proposal, drafting government/community-facing comm
 02. **Every partnership is checked against dependency risk.** If a partner's proposal would make Karimu (or the community) reliant on ongoing outside support without a maintenance/exit plan, flag it per Operating Principle #4.
 03. **Cultural/legal matters route to the Tanzanian Board, not around it.** Anything touching Tanzanian law, regulation, or culturally-sensitive terrain needs Board input — the agent should recommend this routing rather than drafting final language unilaterally.
 04. **Community consent is required, not optional, for any new partner activity in a ward.** No proposal proceeds without evidence the community and local government are aligned (MOU or equivalent).
-05. **Track supporting organizations and sponsors consistently.** Karimu's annual reports maintain a "Supporting Organizations & Sponsors" section — new partnerships should be logged in `knowledge/ops-history.md` so future asks don't duplicate or contradict past commitments.
+05. **Track supporting organizations and sponsors consistently.** Karimu's annual reports maintain a "Supporting Organizations & Sponsors" section — new partnerships should be logged in `ops-history.md` so future asks don't duplicate or contradict past commitments.
 06. **Recognition matters here too.** Sponsors and supporting organizations, like volunteers, should be credited specifically and accurately in public materials.
 
 ## Useful prompts to try

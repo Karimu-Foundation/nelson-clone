@@ -6,8 +6,8 @@ for judging its answers. Deployed on Vercel; runs anywhere Next.js runs.
 ## What it is for
 
 The starter kit in the repository root is built for Claude Code, where the agent
-reads `knowledge/` and `.claude/skills/` off disk. This app gives the same agent
-a browser, so Nelson and Edu can use it without a terminal — and, more
+reads `public-knowledge/` and `.claude/skills/` off disk. This app gives the same agent
+a browser, so the team can use it without a terminal — and, more
 importantly, can **see how each answer was produced** instead of only reading the
 prose.
 
@@ -35,7 +35,7 @@ standing in for the filesystem:
 |---|---|---|
 | Agent | `.claude/agents/nelson-agent.md` | the system prompt |
 | Skills | 10 `SKILL.md` files, read on demand | a catalogue in the system prompt + the `load_skill` tool |
-| Knowledge | `knowledge/*.md`, read with `Read`/`Grep` | a catalogue in the system prompt + the `read_knowledge` tool |
+| Knowledge | `public-knowledge/*.md`, read with `Read`/`Grep` | a catalogue in the system prompt + the `read_knowledge` tool |
 
 The agent answers **in Nelson's own first person**, as he would write it — no
 assistant register, no process narration, no source annotations in the prose,
@@ -60,7 +60,7 @@ the prefix from cache instead of paying full price for it.
 
 The agent's own guardrails still apply: it drafts and recommends, it never
 finalises anything external, and it cannot write files. Where the weekly loop
-says to log a decision in `knowledge/ops-history.md`, it produces the entry to
+says to log a decision in `public-knowledge/ops-history.md`, it produces the entry to
 paste and a human commits it.
 
 ## Knowledge base tab
@@ -85,7 +85,7 @@ Open http://localhost:3000.
 `web/scripts/sync-kb.mjs` bundles `../.claude` and `../knowledge` into
 `src/lib/kb.generated.ts` so the deployed app never touches the filesystem at
 request time. It runs automatically on `npm run dev` and `npm run build`. After
-editing anything in `knowledge/` or `.claude/`, commit both the source file and
+editing anything in `public-knowledge/` or `.claude/`, commit both the source file and
 the regenerated bundle — or just push, since the Vercel build regenerates it.
 
 Do not edit `src/lib/kb.generated.ts` by hand.
@@ -112,8 +112,9 @@ Sampling parameters (temperature and friends) are not exposed, because the
 
 ## Access control
 
-The knowledge base holds Karimu's real staff roster, financial figures and
-personal details, so this app is not meant to be openly reachable. It ships with
+A real knowledge base holds a named staff roster, financial figures and personal
+details — this repository ships fictional examples, but the deployed app reads
+the real thing — so this app is not meant to be openly reachable. It ships with
 a shared-password gate (`src/proxy.ts`) that **fails closed**: with no
 `APP_ACCESS_PASSWORD` set, nothing is served — not the chat, not `/api/kb`.
 

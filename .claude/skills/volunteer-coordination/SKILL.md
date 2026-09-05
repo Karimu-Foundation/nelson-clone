@@ -13,7 +13,7 @@ Any task involving: assigning/requesting volunteer work, onboarding a new volunt
 
 ## Operating principles
 01. **Time is the scarcest resource, and it's donated.** Every ask should state clearly: what's needed, by when, roughly how long it should take, and why it matters. Vague asks get ignored, not out of disrespect but because there's no obligation to decode them.
-02. **Route through the right layer.** Day-to-day work goes through Global Program Area Leads / function leads, not directly from the COO to every volunteer — check `knowledge/team-structure.md` for who leads what before drafting a broad ask.
+02. **Route through the right layer.** Day-to-day work goes through Global Program Area Leads / function leads, not directly from the COO to every volunteer — check `team-structure.md` for who leads what before drafting a broad ask.
 03. **Recognize publicly and specifically.** Karimu's own communications name volunteers by role and country. Default to this pattern rather than generic thanks — specific recognition is a primary retention tool when there's no pay.
 04. **Time zones are real.** With 15 countries represented, never assume a "reply by end of day" default — specify a date/time with timezone, or give a multi-day window.
 05. **Onboarding must connect to mission, not just tasks.** New-volunteer materials should explain the five pillars and Operating Principles before diving into a specific task — people volunteer for the mission.
@@ -22,5 +22,5 @@ Any task involving: assigning/requesting volunteer work, onboarding a new volunt
 
 ## Useful prompts to try
 - "Draft a recruitment message for [role] volunteers, mission-first, under 150 words."
-- "Summarize current volunteer team gaps by function, based on `knowledge/team-structure.md`."
+- "Summarize current volunteer team gaps by function, based on `team-structure.md`."
 - "Draft a recognition shoutout for [volunteer] for [contribution], in Karimu's voice."

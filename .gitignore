@@ -12,3 +12,6 @@ build/
 .vscode/
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# generated from knowledge/ at build time — never commit (would inline the whole KB)
+web/src/lib/kb.generated.ts

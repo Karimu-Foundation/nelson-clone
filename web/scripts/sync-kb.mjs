@@ -17,8 +17,30 @@ const outFile = path.join(webRoot, "src", "lib", "kb.generated.ts");
 
 const agentFile = path.join(repoRoot, ".claude", "agents", "nelson-agent.md");
 const skillsDir = path.join(repoRoot, ".claude", "skills");
-const knowledgeDir = path.join(repoRoot, "knowledge");
+const knowledgeDir = path.join(repoRoot, "public-knowledge");
 const glossaryFile = path.join(repoRoot, "GLOSSARY.md");
+
+/**
+ * The private layer. PRIVATE_KB_DIR points at a checkout of the private
+ * knowledge repository; when it is set, a file there replaces the public file of
+ * the same name outright (it is the fuller version, not a supplement). Without
+ * it — a fork, or a local checkout with no access — the public, annual-report
+ * layer is what the agent gets, and everything still runs.
+ */
+const privateRoot = process.env.PRIVATE_KB_DIR?.trim();
+const privateDir = privateRoot
+  ? path.resolve(privateRoot, "private-knowledge")
+  : null;
+const privateGlossary = privateRoot
+  ? path.resolve(privateRoot, "GLOSSARY.md")
+  : null;
+
+if (privateRoot && !fs.existsSync(privateDir)) {
+  console.error(
+    `[sync-kb] PRIVATE_KB_DIR is set to "${privateRoot}" but ${privateDir} does not exist.`,
+  );
+  process.exit(1);
+}
 
 if (!fs.existsSync(agentFile) || !fs.existsSync(knowledgeDir)) {
   if (fs.existsSync(outFile)) {
@@ -71,21 +93,46 @@ const skills = fs
   .filter(Boolean)
   .sort((a, b) => a.id.localeCompare(b.id));
 
-const knowledge = fs
-  .readdirSync(knowledgeDir)
-  .filter((f) => f.endsWith(".md"))
-  .map((f) => ({
-    id: f.replace(/\.md$/, ""),
-    path: `knowledge/${f}`,
-    body: fs.readFileSync(path.join(knowledgeDir, f), "utf8").trim(),
-  }))
-  .sort((a, b) => a.id.localeCompare(b.id));
+/** Public file, unless the private layer carries one by the same name. */
+function resolveKnowledge(name) {
+  const priv = privateDir ? path.join(privateDir, name) : null;
+  if (priv && fs.existsSync(priv)) {
+    return { file: priv, path: `private-knowledge/${name}`, private: true };
+  }
+  return {
+    file: path.join(knowledgeDir, name),
+    path: `public-knowledge/${name}`,
+    private: false,
+  };
+}
 
-if (fs.existsSync(glossaryFile)) {
+const names = new Set(fs.readdirSync(knowledgeDir).filter((f) => f.endsWith(".md")));
+if (privateDir) {
+  for (const f of fs.readdirSync(privateDir)) {
+    if (f.endsWith(".md")) names.add(f);
+  }
+}
+
+let overridden = 0;
+const knowledge = [...names]
+  .sort((a, b) => a.localeCompare(b))
+  .map((f) => {
+    const src = resolveKnowledge(f);
+    if (src.private) overridden++;
+    return {
+      id: f.replace(/\.md$/, ""),
+      path: src.path,
+      body: fs.readFileSync(src.file, "utf8").trim(),
+    };
+  });
+
+const glossary =
+  privateGlossary && fs.existsSync(privateGlossary) ? privateGlossary : glossaryFile;
+if (fs.existsSync(glossary)) {
   knowledge.unshift({
     id: "glossary",
-    path: "GLOSSARY.md",
-    body: fs.readFileSync(glossaryFile, "utf8").trim(),
+    path: path.basename(glossary),
+    body: fs.readFileSync(glossary, "utf8").trim(),
   });
 }
 
@@ -150,5 +197,8 @@ fs.writeFileSync(outFile, module);
 const bytes = knowledge.reduce((n, k) => n + k.body.length, 0);
 console.log(
   `[sync-kb] ${skills.length} skills, ${knowledge.length} knowledge files ` +
-    `(${(bytes / 1024).toFixed(0)} KB) -> src/lib/kb.generated.ts`,
+    `(${(bytes / 1024).toFixed(0)} KB) -> src/lib/kb.generated.ts` +
+    (privateDir
+      ? ` — private layer ON, ${overridden} file(s) from ${privateDir}`
+      : " — private layer OFF (public annual-report knowledge only)"),
 );
